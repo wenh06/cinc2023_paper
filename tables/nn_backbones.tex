@@ -1,0 +1,16 @@
+
+\begin{table}[!htp]
+\centering
+\begin{tabular}{r|l|l}
+    \hline
+    Backbone & \# Params & Input Type \\ \hline
+    MultiBranch \cite{Kang_2022_cinc2021_iop} & 17.7M & waveforms \\
+    SE-ResNet \cite{Kang_2022_cinc2021_iop} & 15.9M & waveforms  \\
+    ResNet-NC \cite{ribeiro2020automatic} & 15.4M & waveforms  \\
+    TResNetS \cite{Kang_2022_cinc2021_iop} & 41.0M & waveforms  \\
+    TResNetF \cite{Kang_2022_cinc2021_iop} & 4.0M & waveforms  \\
+    wav2vec2 \cite{baevski2020wav2vec} & 19.8M & waveforms \\ \hline
+\end{tabular}
+\caption{NN backbones tested for the Challenge tasks. wav2vec2 used the \texttt{transformers} implementation \texttt{Wav2Vec2Model} rather than the \texttt{torchaudio} implementation.}
+\label{tab:nn_backbone}
+\end{table}
