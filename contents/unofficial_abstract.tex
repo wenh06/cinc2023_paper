@@ -20,12 +20,16 @@ Tianjin, China} % city, [state or province,] country only
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-Aim: to write
+Aim: This work studies the problem of predicting neurological recovery from coma from longitudinal electroencephalogram (EEG) recordings raised by the George B. Moody PhysioNet Challenge 2023. This problem is crucial for continuous brain monitoring for patients after cardiac arrests.
 
-Methods: to write
+Methods: Deep neural network (DNN) models were trained to predict the ordinal (ranging from 1 to 5) cerebral performance category (CPC) scale from EEG waveforms which were rescaled to have zero mean and unit variance. The prediction of CPC scales was treated as a 5-class classification task. The models adopted a bottleneck SE-ResNet backbone with optional long short-term memory (LSTM) and global attention modules on its top. Neural architecture searching was performed to select the optimal model.
 
-Results: to write
+Based on stratified splitting on clinical attributes (age, sex, etc.) and prediction targets (CPC and clinical outcome) of the patients, 20\% of the public training data were left out as a validation set for model selection. Recordings were randomly sliced to lengths of 180 seconds (18000 sample points) every 5 epochs during training. Batch size of 32 was used for parallel training. The AdamW optimizer along with the OneCycle scheduler of maximum learning rate 0.004 was used to optimize the model weights on the asymmetric loss of the training data.
 
-Conclusion: to write
+Predictions of multiple EEG recordings from one patient were merged via manually designed rules to give final CPC and clinical outcome prediction. In cases where no EEG recording was available, random forest regressor and classifier trained using only the clinical attributes took the place of DNNs to make predictions.
+
+Results: The best entry submission of our team ``Revenger'' received a Challenge score of 0.537 on the hidden test set. The highest score on the left-out validation set was 0.462.
+
+Conclusion: We provided an effective solution, which still has improvement spaces, to the problem of continuous brain monitoring after cardiac arrest from EEGs.
 
 \end{document}
