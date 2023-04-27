@@ -5,7 +5,7 @@
 
 % The title is set in 14 point Helvetica bold
 % \title{12-lead Electrocardiogram Arrhythmia Detection using Deep Neural Networks}
-\title{To write}
+\title{Predicting Neurological Recovery from Coma with Longitudinal Electroencephalogram using Deep Neural Network Models}
 
 % The rest of the title block is set in 12 point Helvetica
 \author {Jingsu Kang, Hao Wen\\ % First name, initials and surnames, no ``and''
@@ -20,11 +20,11 @@ Tianjin, China} % city, [state or province,] country only
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-Aim: This work studies the problem of predicting neurological recovery from coma from longitudinal electroencephalogram (EEG) recordings raised by the George B. Moody PhysioNet Challenge 2023. This problem is crucial for continuous brain monitoring for patients after cardiac arrests.
+Aim: This work studies the problem of predicting neurological recovery from coma with longitudinal electroencephalogram (EEG) recordings raised by the George B. Moody PhysioNet Challenge 2023. This problem is crucial for continuous brain monitoring for patients after cardiac arrests.
 
-Methods: Deep neural network (DNN) models were trained to predict the ordinal (ranging from 1 to 5) cerebral performance category (CPC) scale from EEG waveforms which were rescaled to have zero mean and unit variance. The prediction of CPC scales was treated as a 5-class classification task. The models adopted a bottleneck SE-ResNet backbone with optional long short-term memory (LSTM) and global attention modules on its top. Neural architecture searching was performed to select the optimal model.
+Methods: Deep neural network (DNN) models were trained to predict the ordinal (ranging from 1 to 5) cerebral performance category (CPC) scale from EEG waveforms which were rescaled to have zero mean and unit variance. The prediction was treated as a 5-class classification task. The models adopted a bottleneck SE-ResNet backbone with optional long short-term memory (LSTM) and global attention modules on its top. Neural architecture searching was performed to select the optimal model.
 
-Based on stratified splitting on clinical attributes (age, sex, etc.) and prediction targets (CPC and clinical outcome) of the patients, 20\% of the public training data were left out as a validation set for model selection. Recordings were randomly sliced to lengths of 180 seconds (18000 sample points) every 5 epochs during training. Batch size of 32 was used for parallel training. The AdamW optimizer along with the OneCycle scheduler of maximum learning rate 0.004 was used to optimize the model weights on the asymmetric loss of the training data.
+Based on stratified splitting based on clinical attributes (age, sex, etc.) and prediction targets of the patients, 20\% of the public training data were left out as a validation set for model selection. Recordings were randomly sliced to lengths of 180 seconds every 5 epochs during training. Batch size of 32 was used for parallel training. The AdamW optimizer along with the OneCycle scheduler with maximum learning rate 0.004 was used to optimize the model weights on the asymmetric loss of the training data.
 
 Predictions of multiple EEG recordings from one patient were merged via manually designed rules to give final CPC and clinical outcome prediction. In cases where no EEG recording was available, random forest regressor and classifier trained using only the clinical attributes took the place of DNNs to make predictions.
 
