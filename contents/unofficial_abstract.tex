@@ -7,10 +7,10 @@
 % \title{12-lead Electrocardiogram Arrhythmia Detection using Deep Neural Networks}
 \title{Predicting Neurological Recovery from Coma with Longitudinal Electroencephalogram Using Deep Neural Networks}
 
-% The rest of the title block is set in 12 point Helvetica
+% The rest of the title block is set in 12 points Helvetica
 \author {Jingsu Kang, Hao Wen\\ % First name, initials and surnames, no ``and''
 \ \\ % leave an empty line between authors and affiliation
-Tianjin Medical University\\  % give affiliation of first author only
+Tianjin Medical University\\  % give affiliation of the first author only
 Tianjin, China} % city, [state or province,] country only
 
 \maketitle
@@ -22,14 +22,14 @@ Tianjin, China} % city, [state or province,] country only
 
 Aim: This work studies the problem of predicting neurological recovery from coma with longitudinal electroencephalogram (EEG) recordings raised by the George B. Moody PhysioNet Challenge 2023. This problem is crucial for continuous brain monitoring for patients after cardiac arrests.
 
-Methods: Deep neural network (DNN) models were trained to predict the ordinal (ranging from 1 to 5) cerebral performance category (CPC) scale from EEG waveforms which were rescaled to have zero mean and unit variance. The prediction was treated as a 5-class classification task. The models adopted a bottleneck SE-ResNet backbone with optional long short-term memory (LSTM) and global attention modules on its top. Neural architecture searching was performed to select the optimal model.
+Methods: Deep neural network (DNN) models were trained to predict cerebral performance category (CPC) scale, ranging from 1 to 5, from EEG waveforms which were rescaled to have zero mean and unit variance. The prediction was treated as a 5-class classification task. The models adopted a bottleneck SE-ResNet backbone with optional long short-term memory (LSTM) and global attention modules on its top. Neural architecture searching was performed to find the optimal model. Further study will focus on self-supervised representation learning methods and models from EEGs.
 
-Based on stratified splitting based on clinical attributes (age, sex, etc.) and prediction targets of the patients, 20\% of the public training data were left out as a validation set for model selection. Recordings were randomly sliced to lengths of 180 seconds every 5 epochs during training. Batch size of 32 was used for parallel training. The AdamW optimizer along with the OneCycle scheduler with maximum learning rate 0.004 was used to optimize the model weights on the asymmetric loss of the training data.
+Via stratified splitting on clinical attributes (age, sex, etc.) and prediction targets of the patients, 20\% of the public training data were left out as a validation set for model selection. Recordings were randomly sliced to lengths of 180 seconds every 5 epochs during training. The AdamW optimizer along with the OneCycle scheduler with maximum learning rate of 0.004 was used to optimize the model weights on the asymmetric loss of the training data.
 
-Predictions of multiple EEG recordings from one patient were merged via manually designed rules to give final CPC and clinical outcome prediction. In cases where no EEG recording was available, random forest regressor and classifier trained using only the clinical attributes took the place of DNNs to make predictions.
+Predictions of multiple EEG recordings from one patient were merged via manually designed rules to give final CPC and clinical outcome prediction. In cases where no EEG recording was available, random forest regressor and classifier trained using only the clinical attributes replaced DNNs to make predictions.
 
 Results: The best entry submission of our team ``Revenger'' received a Challenge score of 0.537 on the hidden test set. The highest score on the left-out validation set was 0.462.
 
-Conclusion: We provided an effective solution, which still has improvement spaces, to the problem of continuous brain monitoring after cardiac arrest from EEGs.
+Conclusion: Our solution offers a practical way to continuously monitor the brain after cardiac arrest using EEGs, with room and potential for further enhancements.
 
 \end{document}
