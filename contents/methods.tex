@@ -13,14 +13,14 @@ We base this study only on the EEG signals provided by the International Cardiac
     \item Previous literature \cite{Zheng_2021_coma} has illustrated the feasibility of using EEG as the sole physiological signal source on the problem this work considers.
 \end{itemize}
 
+As the computation resources and execution time are limited under the circumstances of the Challenge, further offline data selection was conducted according to the signal quality index (SQI). The SQI was computed for every 5-minute epoch as its proportion of ``normal'' 10s segments. A 10s segment is regarded as ``normal'' if no artefact is detected from it, including abnormal values and patterns in the waveform and in the spectrum \footnote{Refer to \url{https://github.com/DeepPSP/cinc2023/utils/artifact_pipeline} for more details.} The distribution of SQI for all 5-minute epochs is collected in Fig. \ref{fig:sqi-stats}. At most one epoch was chosen (SQI $>= 0.95$, or none was chosen) from each recording as a representative of it for developing our neural network models. A total number of 23350 (to write) 5-minute epochs were selected.
+
 \begin{figure}[!htp]
 \centering
 \includegraphics[width=\linewidth]{images/sqi-stats.pdf}
 \caption[]{Distribution of SQI for all 5-minute EEG epochs. Consecutive epochs from one EEG recording have a 1-minute gap (hop length).}
 \label{fig:sqi-stats}
 \end{figure}
-
-As the computation resources and execution time are limited under the circumstances of the Challenge, further offline data selection was conducted according to the signal quality index (SQI). The SQI was computed for every 5-minute epoch as its proportion of ``normal'' 10s segments. A 10s segment is regarded as ``normal'' if no artefact is detected from it, including abnormal values and patterns in the waveform and in the spectrum \footnote{Refer to \url{https://github.com/DeepPSP/cinc2023/utils/artifact_pipeline} for more details.} The distribution of SQI for all 5-minute epochs is collected in Fig. \ref{fig:sqi-stats}. At most one epoch was chosen (SQI $>= 0.95$, or none was chosen) from each recording as a representative of it for developing our neural network models. A total number of xxx (to write) 5-minute epochs were selected.
 
 
 \subsection{Preprocessing Criteria}
@@ -37,11 +37,13 @@ The EEG recordings provided by the ICARE dataset have varying numbers of channel
 
 Bipolar EEGs were further standardized with the following 3 sequential operations:
 \begin{itemize}
-    \item Butterworth bandpass filter of order 4 and cutoff frequencies 0.5 - 30 Hz;
     \item resample to 100 Hz using polyphase filtering;
+    \item Butterworth bandpass filter of order 4 and cutoff frequencies 0.5 - 30 Hz;
     \item rescale to zero mean and unit variance.
 \end{itemize}
 
+
+to write more ....
 
 \subsection{Models and Training Strategies}
 \label{subsec:models}
@@ -52,8 +54,10 @@ Considering that there's a clear and widely accepted (also adopted in the Challe
     \item ``Good outcome'' for CPC $\in \{1, 2\};$
     \item ``Bood outcome'' for CPC $\in \{3, 4, 5\},$
 \end{itemize}
-and that the CPC values are discrete, we regard the problem as one 5-class classification problem, namely predicting the 5 discrete CPC values.
+and that the CPC values are discrete, we regard the problem as one 5-class classification problem, i.e. predicting the 5 discrete CPC values.
+
+A time-incremental convolutional recurrent neural network (CRNN) \cite{Kang_2022_cinc2021_iop} was adopted as the CPC value classifier. Models with CRNN architectures, especially those with SE-ResNet \cite{hu2020senet} CNN backbones, have proven effective in various physiological signal processing tasks \cite{Kang_2022_cinc2021_iop, wen_cinc2022}
 
 xxx
 
-The asymetric loss \cite{ridnik2021asymmetric_loss} is
+The asymmetric loss \cite{ridnik2021asymmetric_loss} was used as the learning (minimizing) objective. The AdamW optimizer \cite{adamw_amsgrad} was used in conjunction with the \texttt{OneCycle} scheduler \cite{smith2019one_cycle}...
