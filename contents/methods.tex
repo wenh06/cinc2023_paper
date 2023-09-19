@@ -49,12 +49,12 @@ to write more ....
 \label{subsec:models}
 % NOT finished
 
-Considering that there's a clear and widely accepted (also adopted in the Challenge) mapping from CPC values to clinical outcomes as follows:
+Considering that there's a clear and widely accepted (also adopted in the Challenge) mapping from CPC scores to clinical outcomes as follows:
 \begin{itemize}
     \item ``Good outcome'' for CPC $\in \{1, 2\};$
     \item ``Bood outcome'' for CPC $\in \{3, 4, 5\},$
 \end{itemize}
-and that the CPC values are discrete, we regard the problem as one 5-class classification problem, i.e. predicting the 5 discrete CPC values.
+and that the CPC scores are discrete, we regard the problem as one 5-class classification problem, i.e. predicting the 5 discrete CPC values.
 
 A time-incremental convolutional recurrent neural network (CRNN) \cite{Kang_2022_cinc2021_iop} was adopted as the CPC value classifier. Models with CRNN architectures, especially those with SE-ResNet \cite{hu2020senet} CNN backbones, have proven effective in various physiological signal processing tasks \cite{Kang_2022_cinc2021_iop, wen_cinc2022}
 
