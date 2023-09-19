@@ -1,0 +1,14 @@
+\begin{table}[!htp]
+\centering
+% requires packages boldline, multirow
+\setlength\tabcolsep{2pt}
+\begin{tabular}{@{\extracolsep{6pt}}c|c|c|c|c@{}}
+\hlineB{3.5}
+\multirow{2}{*}{batch size} & max & early stop & \multicolumn{2}{c}{learning rate} \\ \cline{4-5}
+& \# iterations & patience & initial & max \\ \hline
+32 & 55 & 25 & 2.5e-3 & 8e-3 \\
+\hlineB{3.5}
+\end{tabular}
+\caption{Primary hyperparameters for NN model training. To avoid overfitting on the training data, early stop callbacks were set which were triggered if the best Challenge score on the left-out validation set stayed unchanged for 25 global iterations. The learning rates were set for the optimizer and its scheduler.}
+\label{tab:hyperparams}
+\end{table}

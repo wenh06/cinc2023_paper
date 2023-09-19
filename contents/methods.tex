@@ -4,20 +4,20 @@
 % NOT finished
 
 \subsection{Dataset and SQI-based Data Selection}
-\label{subsec:data-selection}
+\label{subsec:data_selection}
 % almost finished
 
-We base this study only on the EEG signals provided by the International Cardiac Arrest REsearch consortium (ICARE) dataset \cite{ICAREDatabase}, which is the public dataset for the challenge, although it contains other physiological signals. The following 2 reasons support this choice:
+The public dataset for the Challenge is the International Cardiac Arrest REsearch consortium (I-CARE) database \cite{ICAREDatabase}. It contains mainly EEG recordings from comatose patients with cardiac arrest which were collected up to 72 hours from their return of spontaneous circulation (ROSC). Although this dataset contains physiological signals other than EEG, we base this study only on the EEG data for the following 2 reasons:
 \begin{itemize}
-    \item The amount of EEG data contained in the public dataset is already enormous, exceeding 30,000 hours in length.
+    \item The amount of EEG data in the public dataset is already enormous, exceeding 30,000 hours in length.
     \item Previous literature \cite{Zheng_2021_coma} has illustrated the feasibility of using EEG as the sole physiological signal source on the problem this work considers.
 \end{itemize}
 
-As the computation resources and execution time are limited under the circumstances of the Challenge, further offline data selection was conducted according to the signal quality index (SQI). The SQI was computed for every 5-minute epoch as its proportion of ``normal'' 10s segments. A 10s segment is regarded as ``normal'' if no artefact is detected from it, including abnormal values and patterns in the waveform and in the spectrum \footnote{Refer to \url{https://github.com/DeepPSP/cinc2023/utils/artifact_pipeline} for more details.} The distribution of SQI for all 5-minute epochs is collected in Fig. \ref{fig:sqi-stats}. At most one epoch was chosen (SQI $>= 0.95$, or none was chosen) from each recording as a representative of it for developing our neural network models. A total number of 23350 (to write) 5-minute epochs were selected.
+As the computation resources and execution time are limited under the circumstances of the Challenge, further offline data selection was conducted according to the signal quality index (SQI) of the EEGs. The SQI was computed for every 5-minute epoch as its proportion of ``normal'' 10s segments. A 10s segment is regarded as ``normal'' if no artefact is detected from it, including abnormal values and patterns in the waveform and in the spectrum \footnote{Refer to \url{https://github.com/DeepPSP/cinc2023/utils/artifact_pipeline} for more details.} The distribution of SQI for all 5-minute epochs is collected in Figure \ref{fig:sqi-stats}. At most one epoch was chosen (requiring SQI $\ge 0.95$) from each EEG recording as a representative of it for developing our neural network (NN) models (models will be discussed in Section \ref{subsec:models}). The total number of 5-minute epochs selected was 23350.
 
 \begin{figure}[!htp]
 \centering
-\includegraphics[width=\linewidth]{images/sqi-stats.pdf}
+\includegraphics[width=0.95\linewidth]{images/sqi-stats.pdf}
 \caption[]{Distribution of SQI for all 5-minute EEG epochs. Consecutive epochs from one EEG recording have a 1-minute gap (hop length).}
 \label{fig:sqi-stats}
 \end{figure}
@@ -29,11 +29,11 @@ As the computation resources and execution time are limited under the circumstan
 
 In this subsection, we describe our preprocessing pipeline for model development and making inferences.
 
-The EEG recordings provided by the ICARE dataset have varying numbers of channels (19 - 21) but share a common set of 19 channels. The voltage values of each EEG signal are relative to an ``unknown'' reference potential. Hence in order to align these voltage values, the varying-dimensional EEG signals were transformed into the bipolar format with the following 18 channels
+The EEG recordings provided by the I-CARE dataset have varying numbers (19 - 21) of channels but share a common set of 19 channels. The voltage values of each EEG signal are relative to an ``unknown'' reference potential. Hence in order to align these voltage values, the varying-dimensional EEG signals were transformed into the bipolar format with the following 18 channels
 \begin{indentedquote}{0.3in}
 \it Fp1-F7, F7-T3, T3-T5, T5-O1, Fp2-F8, F8-T4, T4-T6, T6-O2, Fp1-F3, F3-C3, C3-P3, P3-O1, Fp2-F4, F4-C4, C4-P4, P4-O2, Fz-Cz, Cz-Pz
 \end{indentedquote}
-18 was chosen since it is the smallest number of bipolar channels to reconstruct the original 19-channel EEG signal.
+Bipolar values were obtained by subtracting the latter channel from the former channel of the above 18 pairs. The number 18 was chosen since it's the smallest number of bipolar channels to reconstruct the original 19-channel EEG signal.
 
 Bipolar EEGs were further standardized with the following 3 sequential operations:
 \begin{itemize}
@@ -45,19 +45,39 @@ Bipolar EEGs were further standardized with the following 3 sequential operation
 
 to write more ....
 
-\subsection{Models and Training Strategies}
+\subsection{Neural Network Model Selection}
 \label{subsec:models}
 % NOT finished
 
 Considering that there's a clear and widely accepted (also adopted in the Challenge) mapping from CPC scores to clinical outcomes as follows:
 \begin{itemize}
-    \item ``Good outcome'' for CPC $\in \{1, 2\};$
-    \item ``Bood outcome'' for CPC $\in \{3, 4, 5\},$
+    \item ``Good outcome'' for CPC score $\in \{1, 2\};$
+    \item ``Poor outcome'' for CPC score $\in \{3, 4, 5\},$
 \end{itemize}
-and that the CPC scores are discrete, we regard the problem as one 5-class classification problem, i.e. predicting the 5 discrete CPC values.
+and that the CPC scores are discrete scalars, we regard the problem as a 5-class classification problem, i.e. predicting the 5 discrete CPC scores. The binary clinical outcomes (good, poor) are obtained by applying the above rules.
 
-A time-incremental convolutional recurrent neural network (CRNN) \cite{Kang_2022_cinc2021_iop} was adopted as the CPC value classifier. Models with CRNN architectures, especially those with SE-ResNet \cite{hu2020senet} CNN backbones, have proven effective in various physiological signal processing tasks \cite{Kang_2022_cinc2021_iop, wen_cinc2022}
+A time-incremental convolutional recurrent neural network (CRNN) \cite{Kang_2022_cinc2021_iop} was adopted as the CPC value classifier. Models with CRNN architectures, especially those with SE-ResNet \cite{hu2020senet} CNN backbones, have proven effective in various physiological signal processing tasks \cite{Kang_2022_cinc2021_iop, wen_cinc2022}. The building block of the SE-ResNet backbone consists of a bottleneck 3-sequence of convolutions followed by an SE (squeeze-and-exitation) block, as depicted in Figure xxx...
 
-xxx
+to write more...
 
-The asymmetric loss \cite{ridnik2021asymmetric_loss} was used as the learning (minimizing) objective. The AdamW optimizer \cite{adamw_amsgrad} was used in conjunction with the \texttt{OneCycle} scheduler \cite{smith2019one_cycle}...
+
+\subsection{Training Strategies}
+\label{subsec:training}
+% almost finished
+
+As can be inferred from Figure \ref{fig:cpc_vfib_corr}, We have a highly imbalanced distribution of the learning objective (the CPC score) in the I-CARE dataset, which is also divergent across different hospitals as illustrated in Figure \ref{fig:outcome_hospital_corr}. Therefore, the asymmetric loss \cite{ridnik2021asymmetric_loss}, which is the state-of-the-art loss function for multi-label (and also for multi-class) classification problems, was chosen as the minimizing objective. The self-adaptive optimizer \texttt{AdamW} was used in conjunction with the \texttt{OneCycle} scheduler to incrementally update the NN model weights towards their optimal.
+
+\input{plot_figures/metadata_features}
+
+The monitor for model selection is the Challenge score on a left-out validation set which was randomly selected and consisted of $20\%$ of the public training data. The Challenge score is defined as the largest TPR (true positive rate) such that FPR (false positive rate) $\le 0.05$ for the poor clinical outcome prediction. This agrees with the demand for methods with minimal false-positive rate of poor outcomes as introduced in Section \ref{sec:intro}.
+
+A core contradiction for the Challenge lies in the conflict between the large data amount and the limited computation resources (RAM, execution time, etc.) as partly discussed in Section \ref{subsec:data_selection}. As a consequence, further trade-offs were made: we randomly sliced a 3-minute (180 in the number of sample points) piece from each of the selected 5-minute epochs and loaded all the pieces into memory every 5 training iterations. The rest primary training hyperparameters are collected in Table \ref{tab:hyperparams}. It should be noted that the maximum number of training iterations was set to 55 since almost all optimal models were obtained before 30 iterations in our offline experiments with larger total iteration numbers (e.g. 100 iterations).
+
+\input{tables/hyperparams}
+
+
+\subsection{Minimum Guarantee Models}
+\label{subsec:min_grt_models}
+% almost finished
+
+The Challenge also evaluated the submissions on subsets with recordings truncated up to 12 / 24 / 48 hours from ROSC, in which case a single patient might not have valid EEGs. In order to be able to predict clinical outcomes without EEGs, we used a random forest model as a minimum guarantee model. This model took all clinical information of a patient provided by the I-CARE database as input and was selected via parameter grid searching over the same train-validation split as described in Section \ref{subsec:training}.
