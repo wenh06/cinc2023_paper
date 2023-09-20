@@ -1,0 +1,43 @@
+\begin{figure}
+\centering
+
+\begin{tikzpicture}%[node distance = 1cm, auto]
+
+% \tikzstyle{block} = [rectangle, draw, text width = 5em, text centered, rounded corners, inner sep = 3pt, minimum height = 1.0em]
+
+\tikzstyle{wideblock} = [rectangle, draw, text width = 12em, text centered, rounded corners, inner sep = 3pt, minimum height = 1.0em]
+
+\pgfmathsetmacro\blockdist {0.4}
+\pgfmathsetmacro\pathshift {0.1}
+
+\node [rectangle, text width = 12em, text centered, rounded corners, inner sep = 3pt, minimum height = 1.0em] (input) {EEG Waveform};
+
+\node [wideblock, below = \blockdist of input] (stem) {Stem Conv};
+\path[->] ([yshift = -\pathshift]input.south) edge ([yshift = \pathshift]stem.north);
+
+\node [wideblock, below = \blockdist of stem] (bottleneck) {4 $\times$ SE-Bottleneck};
+\path[->] ([yshift = -\pathshift]stem.south) edge ([yshift = \pathshift]bottleneck.north);
+
+\node [wideblock, below = \blockdist of bottleneck] (lstm) {2 $\times$ Bidirectional LSTM};
+\path[->] ([yshift = -\pathshift]bottleneck.south) edge ([yshift = \pathshift]lstm.north);
+
+\node [wideblock, below = \blockdist of lstm] (se) {SE Global Attention};
+\path[->] ([yshift = -\pathshift]lstm.south) edge ([yshift = \pathshift]se.north);
+
+\node [wideblock, below = \blockdist of se] (pool) {Adaptive Average Pooling};
+\path[->] ([yshift = -\pathshift]se.south) edge ([yshift = \pathshift]pool.north);
+
+\node [wideblock, below = \blockdist of pool] (mlp) {Multi-Layer Perceptron};
+\path[->] ([yshift = -\pathshift]pool.south) edge ([yshift = \pathshift]mlp.north);
+
+\node [rectangle, text width = 12em, text centered, rounded corners, inner sep = 3pt, minimum height = 1.0em, below = \blockdist of mlp] (prob) {Probability Vectors for 5 CPC Scores};
+\path[->] ([yshift = -\pathshift]mlp.south) edge ([yshift = \pathshift]prob.north);
+
+\draw[rounded corners, dashed, thick] ([xshift = -80, yshift = -5]mlp.south) rectangle ([xshift = 80, yshift = 5]stem.north);
+\draw[rounded corners, ultra thick] ([xshift = -105, yshift = -5]prob.south) rectangle ([xshift = 105, yshift = 5]input.north);
+
+\end{tikzpicture}
+
+\caption{to write.}
+\label{fig:model_arch}
+\end{figure}

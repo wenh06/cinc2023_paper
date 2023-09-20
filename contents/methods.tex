@@ -57,10 +57,13 @@ Considering that there's a clear and widely accepted (also adopted in the Challe
 \end{itemize}
 and that the CPC scores are discrete scalars, we regard the problem as a 5-class classification problem, i.e. predicting the 5 discrete CPC scores. The binary clinical outcomes (good, poor) are obtained by applying the above rules.
 
-A time-incremental convolutional recurrent neural network (CRNN) \cite{Kang_2022_cinc2021_iop} was adopted as the CPC value classifier. Models with CRNN architectures, especially those with SE-ResNet \cite{hu2020senet} CNN backbones, have proven effective in various physiological signal processing tasks \cite{Kang_2022_cinc2021_iop, wen_cinc2022}. The building block of the SE-ResNet backbone consists of a bottleneck 3-sequence of convolutions followed by an SE (squeeze-and-exitation) block, as depicted in Figure xxx...
+A time-incremental convolutional recurrent neural network (CRNN) \cite{Kang_2022_cinc2021_iop} was adopted as the CPC score classifier. Models with CRNN architectures, especially those with SE-ResNet \cite{hu2020senet} CNN backbones, have proven effective in various physiological signal processing tasks \cite{Kang_2022_cinc2021_iop, wen_cinc2022}. The building block of the SE-ResNet backbone used in this work consists of 3 sequential convolutional blocks of bottleneck shape followed by an SE (squeeze-and-excitation) block with an extra shortcut connecting the input and output as sketched in Figure \ref{fig:se_bottleneck}.
 
-to write more...
+\input{plot_figures/se_bottleneck}
 
+
+
+\input{plot_figures/model_arch}
 
 \subsection{Training Strategies}
 \label{subsec:training}
@@ -72,7 +75,7 @@ As can be inferred from Figure \ref{fig:cpc_vfib_corr}, We have a highly imbalan
 
 The monitor for model selection is the Challenge score on a left-out validation set which was randomly selected and consisted of $20\%$ of the public training data. The Challenge score is defined as the largest TPR (true positive rate) such that FPR (false positive rate) $\le 0.05$ for the poor clinical outcome prediction. This agrees with the demand for methods with minimal false-positive rate of poor outcomes as introduced in Section \ref{sec:intro}.
 
-A core contradiction for the Challenge lies in the conflict between the large data amount and the limited computation resources (RAM, execution time, etc.) as partly discussed in Section \ref{subsec:data_selection}. As a consequence, further trade-offs were made: we randomly sliced a 3-minute (180 in the number of sample points) piece from each of the selected 5-minute epochs and loaded all the pieces into memory every 5 training iterations. The rest primary training hyperparameters are collected in Table \ref{tab:hyperparams}. It should be noted that the maximum number of training iterations was set to 55 since almost all optimal models were obtained before 30 iterations in our offline experiments with larger total iteration numbers (e.g. 100 iterations).
+A core contradiction for the Challenge lies in the conflict between the large data amount and the limited computation resources (RAM, execution time, etc.) as partly discussed in Section \ref{subsec:data_selection}. As a consequence, further trade-offs were made: we randomly sliced a 3-minute (180 in the number of sample points) piece from each of the selected 5-minute epochs and loaded all the data pieces into memory every 5 training iterations. The rest primary training hyperparameters are collected in Table \ref{tab:hyperparams}. It should be noted that the maximum number of training iterations was set to 55 since almost all optimal models were obtained before 30 iterations in our offline experiments using much larger total iteration numbers (e.g. 100 iterations).
 
 \input{tables/hyperparams}
 
@@ -81,4 +84,4 @@ A core contradiction for the Challenge lies in the conflict between the large da
 \label{subsec:min_grt_models}
 % almost finished
 
-The Challenge also evaluated the submissions on subsets with recordings truncated up to 12 / 24 / 48 hours from ROSC, in which case a single patient might not have valid EEGs. In order to be able to predict clinical outcomes without EEGs, we used a random forest model as a minimum guarantee model. This model took all clinical information of a patient provided by the I-CARE database as input and was selected via parameter grid searching over the same train-validation split as described in Section \ref{subsec:training}.
+The Challenge also evaluated the submissions on subsets with recordings truncated up to 12 / 24 / 48 hours from ROSC, in which case a single patient might not have valid EEGs. In order to be able to predict clinical outcomes without EEGs, we used a machine learning model as a minimum guarantee model which took all clinical information of a patient provided by the I-CARE database as input. This model was selected via parameter grid searching over a set of models including random forest, gradient boosting machine, support vector machine, etc. using the same train-validation split as described in Section \ref{subsec:training}.

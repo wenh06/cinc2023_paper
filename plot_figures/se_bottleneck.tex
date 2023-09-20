@@ -1,0 +1,59 @@
+\begin{figure}
+\centering
+
+\begin{tikzpicture}%[node distance = 1cm, auto]
+
+\tikzstyle{block} = [rectangle, draw, text width = 5em, text centered, rounded corners, inner sep = 3pt, minimum height = 1.0em]
+
+\tikzstyle{wideblock} = [rectangle, draw, text width = 12em, text centered, rounded corners, inner sep = 3pt, minimum height = 1.0em]
+
+\tikzset{%
+  do path picture/.style={%
+    path picture={%
+      \pgfpointdiff{\pgfpointanchor{path picture bounding box}{south west}}%
+        {\pgfpointanchor{path picture bounding box}{north east}}%
+      \pgfgetlastxy\x\y%
+      \tikzset{x=\x/2,y=\y/2}%
+      #1
+    }
+  },
+  plus/.style={do path picture={    
+    \draw [line cap=round] (-3/4,0) -- (3/4,0) (0,-3/4) -- (0,3/4);
+  }}
+}
+
+\coordinate (top) at (0, 0);
+\pgfmathsetmacro\blockdist {0.4}
+\pgfmathsetmacro\pathshift {0.1}
+
+\node [wideblock, below = \blockdist of top] (conv1) {Conv($n_1, m)$};
+\path [->] (top) edge ([yshift = \pathshift]conv1.north);
+
+\node [block, below = \blockdist of conv1] (conv2) {Conv($m, m)$};
+\path [->] ([yshift = -\pathshift]conv1.south) edge ([yshift = \pathshift]conv2.north);
+
+\node [wideblock, below = \blockdist of conv2] (conv3) {Conv($m, n_2)$};
+\path [->] ([yshift = -\pathshift]conv2.south) edge ([yshift = \pathshift]conv3.north);
+
+\node [wideblock, below = \blockdist of conv3] (se) {SE Block};
+\path [->] ([yshift = -\pathshift]conv3.south) edge ([yshift = \pathshift]se.north);
+
+\node [circle, draw, plus, below = 0.7 * \blockdist of se] (plus) {};
+\path [->] ([yshift = -\pathshift]se.south) edge ([yshift = \pathshift]plus.north);
+
+\coordinate[below = 0.7 * \blockdist of plus] (bottom);
+\path [->] ([yshift = -\pathshift]plus.south) edge (bottom);
+
+\node [block, above right = -0.2 and 0.6 of conv3] (shortcut) {Shortcut};
+\draw [->] ([yshift = 7]conv1.north) -| ([yshift = \pathshift]shortcut.north);
+\draw [->] ([yshift = -\pathshift]shortcut.south) |- ([xshift = \pathshift]plus.east);
+
+
+\draw[rounded corners, dashed, thick] ([xshift = -70, yshift = -11]se) rectangle ([xshift = 70, yshift = 11]conv1);
+\draw[rounded corners, ultra thick] ([xshift = -82, yshift = -5]bottom) rectangle ([xshift = 145, yshift = 5]top);
+
+\end{tikzpicture}
+
+\caption{The structure of an SE-Bottleneck block. The mainstream in the dashed box consists of 3 convolutional blocks (actually compositions of convolution, batch normalization and activation) followed by an SE block. The channels $n_1, n_2$ are typically several times of $m,$ hence giving the name ``bottleneck''. The shortcut is typically convolutions of kernel size 1, whose stride and input/output channels match the mainstream.}
+\label{fig:se_bottleneck}
+\end{figure}
