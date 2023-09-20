@@ -39,11 +39,12 @@ Bipolar EEGs were further standardized with the following 3 sequential operation
 \begin{itemize}
     \item resample to 100 Hz using polyphase filtering;
     \item Butterworth bandpass filter of order 4 and cutoff frequencies 0.5 - 30 Hz;
-    \item rescale to zero mean and unit variance.
+    \item rescale to zero mean and unit variance (also called z-score normalization).
 \end{itemize}
 
+It has to be emphasized that the z-score normalization is a crucial step, without which the model performance degraded significantly as observed in offline experiments.
 
-to write more ....
+to add figures...
 
 \subsection{Neural Network Model Selection}
 \label{subsec:models}
