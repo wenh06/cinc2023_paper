@@ -13,19 +13,21 @@ The public dataset for the Challenge is the International Cardiac Arrest REsearc
     \item Previous literature \cite{Zheng_2021_coma} has illustrated the feasibility of using EEG as the sole physiological signal source on the problem this work considers.
 \end{itemize}
 
-As the computation resources and execution time are limited under the circumstances of the Challenge, further offline data selection was conducted according to the signal quality index (SQI) of the EEGs. The SQI was computed for every 5-minute epoch as its proportion of ``normal'' 10s segments. A 10s segment is regarded as ``normal'' if no artefact is detected from it, including abnormal values and patterns in the waveform and in the spectrum \footnote{Refer to \url{https://github.com/DeepPSP/cinc2023/utils/artifact_pipeline} for more details.} The distribution of SQI for all 5-minute epochs is collected in Figure \ref{fig:sqi-stats}. At most one epoch was chosen (requiring SQI $\ge 0.95$) from each EEG recording as a representative of it for developing our neural network (NN) models (models will be discussed in Section \ref{subsec:models}). The total number of 5-minute epochs selected was 23350.
+As the computation resources and execution time are limited under the circumstances of the Challenge, further offline data selection was conducted according to the signal quality index (SQI) of the EEGs. The SQI was computed for every 5-minute epoch as its proportion of ``normal'' 10s segments. A 10s segment is regarded as ``normal'' if no artefact is detected from it, including abnormal values and patterns in the waveform and in the spectrum \footnote{Refer to \url{https://github.com/DeepPSP/cinc2023/utils/artifact_pipeline} for more details.}
+% The distribution of SQI for all 5-minute epochs is collected in Figure \ref{fig:sqi-stats}.
+At most one epoch was chosen (requiring SQI $\ge 0.95$) from each EEG recording as a representative of it for developing our neural network (NN) models (models will be discussed in Section \ref{subsec:models}). The total number of 5-minute epochs selected was 23350.
 
-\begin{figure}[!htp]
-\centering
-\includegraphics[width=0.95\linewidth]{images/sqi-stats.pdf}
-\caption[]{Distribution of SQI for all 5-minute EEG epochs. Consecutive epochs from one EEG recording have a 1-minute gap (hop length).}
-\label{fig:sqi-stats}
-\end{figure}
+% \begin{figure}[!htp]
+% \centering
+% \includegraphics[width=0.95\linewidth]{images/sqi-stats.pdf}
+% \caption[]{Distribution of SQI for all 5-minute EEG epochs. Consecutive epochs from one EEG recording have a 1-minute gap (hop length).}
+% \label{fig:sqi-stats}
+% \end{figure}
 
 
 \subsection{Preprocessing Criteria}
 \label{subsec:data_preproc}
-% NOT finished
+% almost finished
 
 In this subsection, we describe our preprocessing pipeline for model development and making inferences.
 
@@ -33,7 +35,8 @@ The EEG recordings provided by the I-CARE dataset have varying numbers (19 - 21)
 \begin{indentedquote}{0.3in}
 \it Fp1-F7, F7-T3, T3-T5, T5-O1, Fp2-F8, F8-T4, T4-T6, T6-O2, Fp1-F3, F3-C3, C3-P3, P3-O1, Fp2-F4, F4-C4, C4-P4, P4-O2, Fz-Cz, Cz-Pz
 \end{indentedquote}
-Bipolar values were obtained by subtracting the latter channel from the former channel of the above 18 pairs. The number 18 was chosen since it's the smallest number of bipolar channels to reconstruct the original 19-channel EEG signal.
+Bipolar values were obtained by subtracting the latter channel from the former channel of the above 18 pairs.
+% The number 18 was chosen since it's the smallest number of bipolar channels to reconstruct the original 19-channel EEG signal.
 
 Bipolar EEGs were further standardized with the following 3 sequential operations:
 \begin{itemize}
@@ -42,28 +45,40 @@ Bipolar EEGs were further standardized with the following 3 sequential operation
     \item rescale to zero mean and unit variance (also called z-score normalization).
 \end{itemize}
 
-It has to be emphasized that the z-score normalization is a crucial step, without which the model performance degraded significantly as observed in offline experiments.
+It has to be emphasized that the z-score normalization is a crucial step, without which the model performance degraded significantly as observed in offline experiments which is demonstrated in Figure \ref{fig:train_scores_compare}.
 
-to add figures...
+\begin{figure}[!htp]
+\centering
+\includegraphics[width=0.95\linewidth]{images/train_scores_compare.pdf}
+\caption[]{Comparison between mean curves of challenge scores from multiple experiments on the training set with (w.) and without (w.o.) z-score normalization. Shaded areas are error bounds (standard error of the mean).}
+\label{fig:train_scores_compare}
+\end{figure}
 
 \subsection{Neural Network Model Selection}
 \label{subsec:models}
-% NOT finished
+% almost finished
 
 Considering that there's a clear and widely accepted (also adopted in the Challenge) mapping from CPC scores to clinical outcomes as follows:
-\begin{itemize}
-    \item ``Good outcome'' for CPC score $\in \{1, 2\};$
-    \item ``Poor outcome'' for CPC score $\in \{3, 4, 5\},$
-\end{itemize}
-and that the CPC scores are discrete scalars, we regard the problem as a 5-class classification problem, i.e. predicting the 5 discrete CPC scores. The binary clinical outcomes (good, poor) are obtained by applying the above rules.
+\begin{equation}
+\label{eq:cpc_outcome_mapping}
+\begin{array}{cl}
+\text{``Good outcome''} & \text{for CPC score } \in \{1, 2\}; \\
+\text{``Poor outcome''} & \text{for CPC score } \in \{3, 4, 5\},
+\end{array}
+\end{equation}
+% \begin{itemize}
+%     \item ``Good outcome'' for CPC score $\in \{1, 2\};$
+%     \item ``Poor outcome'' for CPC score $\in \{3, 4, 5\},$
+% \end{itemize}
+and that the CPC scores are discrete scalars, we regard the problem as a 5-class classification problem, i.e. predicting the 5 discrete CPC scores.
 
-A time-incremental convolutional recurrent neural network (CRNN) \cite{Kang_2022_cinc2021_iop} was adopted as the CPC score classifier. Models with CRNN architectures, especially those with SE-ResNet \cite{hu2020senet} CNN backbones, have proven effective in various physiological signal processing tasks \cite{Kang_2022_cinc2021_iop, wen_cinc2022}. The building block of the SE-ResNet backbone used in this work consists of 3 sequential convolutional blocks of bottleneck shape followed by an SE (squeeze-and-excitation) block with an extra shortcut connecting the input and output as sketched in Figure \ref{fig:se_bottleneck}.
+A Time-incremental Convolutional Recurrent Neural Network (TiCRNN) \cite{Kang_2022_cinc2021_iop} was adopted as the CPC score classifier. Models with CRNN architecture, especially those with SE-ResNet \cite{hu2020senet} CNN backbones, have proven effective in various physiological signal processing tasks \cite{Kang_2022_cinc2021_iop, wen_cinc2022}. The building block of the SE-ResNet backbone used in this work consists of 3 sequential convolutional blocks of bottleneck shape followed by an SE (squeeze-and-excitation) block with an extra shortcut connecting the input and output as sketched in Figure \ref{fig:se_bottleneck}. The whole architecture of the TiCRNN model used in this work is depicted in Figure \ref{fig:model_arch}. It is a sequential model with 1 stem convolutional block which takes preprocessed EEG waveforms as input, 4 SE-Bottleneck blocks, 2 bidirectional LSTM blocks, 1 SE global attention module, 1 adaptive average pooling layer which outputs the feature vectors, and a multi-layer perceptron which takes in the feature vectors and outputs the probability vectors for the 5 CPC scores.
 
 \input{plot_figures/se_bottleneck}
 
-
-
 \input{plot_figures/model_arch}
+
+Probability vectors from multiple EEGs of one patient are averaged and re-normalized via softmax to get the final CPC score predictions. The binary clinical outcomes (good, poor) are obtained by applying the mapping \eqref{eq:cpc_outcome_mapping}.
 
 \subsection{Training Strategies}
 \label{subsec:training}
@@ -80,8 +95,8 @@ A core contradiction for the Challenge lies in the conflict between the large da
 \input{tables/hyperparams}
 
 
-\subsection{Minimum Guarantee Models}
-\label{subsec:min_grt_models}
-% almost finished
+% \subsection{Minimum Guarantee Models}
+% \label{subsec:min_grt_models}
+% % almost finished
 
-The Challenge also evaluated the submissions on subsets with recordings truncated up to 12 / 24 / 48 hours from ROSC, in which case a single patient might not have valid EEGs. In order to be able to predict clinical outcomes without EEGs, we used a machine learning model as a minimum guarantee model which took all clinical information of a patient provided by the I-CARE database as input. This model was selected via parameter grid searching over a set of models including random forest, gradient boosting machine, support vector machine, etc. using the same train-validation split as described in Section \ref{subsec:training}.
+% The Challenge also evaluated the submissions on subsets with recordings truncated up to 12 / 24 / 48 hours from ROSC, in which case a single patient might not have valid EEGs. In order to be able to predict clinical outcomes without EEGs, we used a random forest model as a minimum guarantee model which took all clinical information of a patient provided by the I-CARE database as input. This model was selected via parameter grid searching over the same train-validation split as described in Section \ref{subsec:training}.
