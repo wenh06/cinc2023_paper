@@ -1,6 +1,4 @@
 % finished
-\begin{figure}
-\centering
 
 \begin{tikzpicture}%[node distance = 1cm, auto]
 
@@ -16,8 +14,13 @@
 \node [wideblock, below = \blockdist of input] (stem) {Stem Conv};
 \path[->] ([yshift = -\pathshift]input.south) edge ([yshift = \pathshift]stem.north);
 
-\node [wideblock, below = \blockdist of stem] (bottleneck) {4 $\times$ SE-Bottleneck};
+\ifcoloredtext
+\node [wideblock, below = \blockdist of stem] (bottleneck) {\bf\color{red}4 $\times$ SE-Bottleneck};
 \path[->] ([yshift = -\pathshift]stem.south) edge ([yshift = \pathshift]bottleneck.north);
+\else
+\node [wideblock, below = \blockdist of stem] (bottleneck) {\bf 4 $\times$ SE-Bottleneck};
+\path[->] ([yshift = -\pathshift]stem.south) edge ([yshift = \pathshift]bottleneck.north);
+\fi
 
 \node [wideblock, below = \blockdist of bottleneck] (lstm) {2 $\times$ Bidirectional LSTM};
 \path[->] ([yshift = -\pathshift]bottleneck.south) edge ([yshift = \pathshift]lstm.north);
@@ -35,10 +38,6 @@
 \path[->] ([yshift = -\pathshift]mlp.south) edge ([yshift = \pathshift]prob.north);
 
 \draw[rounded corners, dashed, thick] ([xshift = -80, yshift = -5]mlp.south) rectangle ([xshift = 80, yshift = 5]stem.north);
-\draw[rounded corners, ultra thick] ([xshift = -105, yshift = -5]prob.south) rectangle ([xshift = 105, yshift = 5]input.north);
+\draw[rounded corners, ultra thick] ([xshift = -103, yshift = -5]prob.south) rectangle ([xshift = 103, yshift = 5]input.north);
 
 \end{tikzpicture}
-
-\caption{Architecture of the TiCRNN model. Considering that the preprocessed input EEG waveforms have a sampling frequency of 100 Hz, convolutions, except the shortcuts in SE-Bottleneck blocks, have a kernel size of 3. The total number of trainable parameters in 92M.}
-\label{fig:model_arch}
-\end{figure}

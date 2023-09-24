@@ -74,9 +74,20 @@ and that the CPC scores are discrete scalars, we regard the problem as a 5-class
 
 A Time-incremental Convolutional Recurrent Neural Network (TiCRNN) \cite{Kang_2022_cinc2021_iop} was adopted as the CPC score classifier. Models with CRNN architecture, especially those with SE-ResNet \cite{hu2020senet} CNN backbones, have proven effective in various physiological signal processing tasks \cite{Kang_2022_cinc2021_iop, wen_cinc2022}. The building block of the SE-ResNet backbone used in this work consists of 3 sequential convolutional blocks of bottleneck shape followed by an SE (squeeze-and-excitation) block with an extra shortcut connecting the input and output as sketched in Figure \ref{fig:se_bottleneck}. The whole architecture of the TiCRNN model used in this work is depicted in Figure \ref{fig:model_arch}. It is a sequential model with 1 stem convolutional block which takes preprocessed EEG waveforms as input, 4 SE-Bottleneck blocks, 2 bidirectional LSTM blocks, 1 SE global attention module, 1 adaptive average pooling layer which outputs the feature vectors, and a multi-layer perceptron which takes in the feature vectors and outputs the probability vectors for the 5 CPC scores.
 
+\begin{figure}[!htp]
+\centering
 \input{plot_figures/se_bottleneck}
+\caption{The structure of an SE-Bottleneck block. The mainstream in the dashed box consists of 3 convolutional blocks (actually compositions of convolution, batch normalization and activation) followed by an SE block. The channels $n_1, n_2$ are typically several times of $m,$ hence giving the name ``bottleneck''. The shortcut is typically convolutions of kernel size 1, whose stride and input/output channels match the mainstream.}
+\label{fig:se_bottleneck}
+\end{figure}
+\end{figure}
 
+\begin{figure}[!htp]
+\centering
 \input{plot_figures/model_arch}
+\caption{Architecture of the TiCRNN model. Considering that the preprocessed input EEG waveforms have a sampling frequency of 100 Hz, convolutions, except the shortcuts in SE-Bottleneck blocks, have a kernel size of 3. The total number of trainable parameters in 92M.}
+\label{fig:model_arch}
+\end{figure}
 
 Probability vectors from multiple EEGs of one patient are averaged and re-normalized via softmax to get the final CPC score predictions. The binary clinical outcomes (good, poor) are obtained by applying the mapping \eqref{eq:cpc_outcome_mapping}.
 
