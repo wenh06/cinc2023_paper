@@ -27,6 +27,7 @@
 
 \usepackage{amsmath, amsfonts, amssymb, amsthm} % Math packages
 \usepackage{eqparbox}
+\usepackage{boldline, multirow}
 
 \usepackage{textcomp}
 
@@ -128,7 +129,9 @@ $^2${\it College of Science, China Agricultural University} \\
 
 \input{plot_figures/model_arch}
 
-We used a {\color{red}T}ime-{\color{red}i}ncremental {\color{red}C}onvolutional {\color{red}R}ecurrent {\color{red}N}eural {\color{red}N}etwork ({\color{red}TiCRNN}) model to predict CPC scores for the EEG recordings.
+% \vspace{-0.3cm}
+
+We used a {\color{red}T}ime-{\color{red}i}ncremental {\color{red}C}onvolutional {\color{red}R}ecurrent {\color{red}N}eural {\color{red}N}etwork ({\color{red}TiCRNN}) model to predict probabilities of CPC scores for the EEG recordings.
 
 }
 \headerbox{Neural Network Backbone}{name=backbone, column=1, span=2, row=1, below=introduction}{
@@ -145,14 +148,16 @@ We used a {\color{red}T}ime-{\color{red}i}ncremental {\color{red}C}onvolutional 
 %	Preprocessing
 %----------------------------------------------------------------------------------------
 
-\headerbox{Preprocess Pipeline}{name=data, column=1, row=1, span=1, below=backbone}{
+\headerbox{Preprocess Pipeline}{name=data, column=2, row=1, span=1, below=backbone}{
 % finished
 \begin{itemize}
-    \item Butterworth bandpass filtering of order 4 and cutoff frequencies 0.5 - 30 Hz.
-    \vspace{-0.2cm}
-    \item Resampling to 100 Hz using polyphase filtering.
-    \vspace{-0.2cm}
-    \item Rescaling (Z-score normalization) to zero mean and unit variance.
+\item Select at most one 5-minute window from each recording by offline-computed SQI.
+\vspace{-0.2cm}
+\item Butterworth bandpass filtering of order 4 and cutoff frequencies 0.5 - 30 Hz.
+\vspace{-0.2cm}
+\item Resampling to 100 Hz using polyphase filtering.
+\vspace{-0.2cm}
+\item Rescaling (Z-score normalization) to zero mean and unit variance.
 \end{itemize}
 }
 
@@ -160,94 +165,115 @@ We used a {\color{red}T}ime-{\color{red}i}ncremental {\color{red}C}onvolutional 
 %	Training Setups
 %----------------------------------------------------------------------------------------
 
-\headerbox{Training Strategies}{name=training, span=1, column=2, row=1, below=backbone}{
+\headerbox{Training Strategies}{name=training, span=1, column=1, row=1, below=backbone}{
 % finished
 \begin{itemize}
-    \item Optimizer: AMSGrad variant of AdamW with OneCycleLR scheduler.
-    \vspace{-0.2cm}
-    \item Stratified train-validation split (split in patients): 80 \% -- 20 \%.
-    \vspace{-0.2cm}
-    \item Batch size 32; epoch number $\leq 55$ with early stopping patience 25 epochs.
+\item Optimizer: AMSGrad variant of AdamW with OneCycleLR scheduler.
+\vspace{-0.2cm}
+\item Stratified train-validation split (split among patients): 80 \% -- 20 \%.
+\vspace{-0.2cm}
+\item Batch size 32; epoch number $\leq 55$ with early stopping patience 25 epochs.
+\vspace{-0.2cm}
+\item Input length 180s, randomly sliced from one recording and reloads every 5 epochs.
 \end{itemize}
 }
 
+%----------------------------------------------------------------------------------------
+%	Importance of Rescaling
+%----------------------------------------------------------------------------------------
+
+\headerbox{Importance of Rescaling}{name=rescale, span=1, column=2, below=data}{
+% finished
+
+\includegraphics[width=\linewidth]{images/train_scores_compare.pdf}
+
+Mean curves of challenge scores on the training set. Shaded areas are error bounds.
+
+}
 
 %----------------------------------------------------------------------------------------
 %	Submission Results
 %----------------------------------------------------------------------------------------
 
-% \headerbox{Submission Results}{name=submission, span=2, column=1, below=training}{
-% % finished
-% \begin{center}
-% \begin{tabular}{r|c|c|c}
-%     \hline
-%     & \textbf{Murmur} & \multicolumn{2}{c}{\textbf{Outcome}} \\
-%     & \textbf{weighted accuracy} & \multicolumn{1}{c}{\textbf{cost}} & \multicolumn{1}{c}{weighted accuracy} \\ \hline
-%     Train & $0.88\pm 0.05$ & $8452\pm 2324$ & $0.88\pm 0.07$ \\
-%     Train-val & $0.86\pm 0.01$ & $11341\pm 336$ & $0.79\pm 0.05$ \\ \hline
-%     Hidden val & \textbf{0.689} & \textbf{9471.652} & NA \\
-%     Ranking & \textbf{79/303} & \textbf{21/303} & NA \\ \hline
-% \end{tabular}
-% \end{center}
-% Scores on the train, and train-val sets are provided with mean and standard deviation over most of our offline experiments. Scores on the hidden validation set are provided with the best scores out of the 10 submissions.
-% }
+\headerbox{Submission Results}{name=submission, span=2, column=0, below=nn}{
+% finished
+
+\renewcommand{\arraystretch}{1.25}
+\begin{center}
+% requires packages boldline, multirow
+\setlength\tabcolsep{4pt}
+% \begin{tabular}{@{\extracolsep{6pt}}c|c|c|c|c@{}}
+\begin{tabular}{c|c|c|c|c}
+\hlineB{3.5}
+& \multicolumn{4}{c}{\textbf{Challenge Scores}} \\ \cline{2-5}
+& \textbf{72 hours} & 12 hours & 24 hours & 48 hours \\ \hline
+Training & 0.814 $\pm$ 0.070 & - & - & - \\
+Cross-validation & 0.424 $\pm$ 0.026 & - & - & - \\ \hline
+Hidden validation & \textbf{0.701} & 0.33 & 0.40 & 0.75 \\
+Ranking & \textbf{5 / 270} & - & - & - \\
+\hlineB{3.5}
+\end{tabular}
+\end{center}
+\renewcommand{\arraystretch}{1}
+
+\begin{itemize}
+    \item Challenge score and ranking evaluated on the hidden validation set, scores on its truncated 12h / 24h / 48h subsets and scores on the training and cross-validation sets.
+    \vspace{-0.2cm}
+    \item Scores on the train and cross-validation sets are of the form $mean \pm std. dev.$ from all our offline experiments with z-score normalization included in the preprocessing pipeline.
+\end{itemize}
+
+}
 
 %----------------------------------------------------------------------------------------
 %	Limitations, Discussions
 %----------------------------------------------------------------------------------------
 
-% \headerbox{Discussions and Limitations}{name=discussion, column=0, below=dem, span=3}{
-% % not finished
-% \begin{itemize}
-% \item Our multi-task learning (MTL) paradigm proved practical for the problems of heart murmur detection and clinical outcome identification from PCGs. The additional segmentation head makes the shared representation (the common backbone) learn more general features and thus improves the performances for the original two classification tasks the Challenge raised.
-% \vspace{-0.2cm}
-% \item All our models used \textbf{time-domain} signals, i.e. the \textbf{waveforms} as inputs. The derived \textbf{time-frequency-domain} signals, for example, the \textbf{spectrograms}, were not tested. Models that accept mixed-type inputs were not tested either.
-% \vspace{-0.2cm}
-% \item The need for Z-score normalization has to be reconsidered. More frequency-domain augmentation methods should be applied.
-% \vspace{-0.2cm}
-% \item The convolutional neural backbones proved effective, but still have room for improvement compared to top teams.
-% \vspace{-0.2cm}
-% \item The potential of models with the \textbf{transformer architecture} (e.g. the \textbf{wav2vec2} model) were not fully explored. As well as the powerfulness of model pretraining via self-supervised learning on larger datasets (e.g. the PhysioNet EPHNOGRAM dataset, etc.).
-% \end{itemize}
-% }
+\headerbox{Discussions and Limitations}{name=discussion, column=0, below=submission, span=3}{
+% not finished
+\begin{itemize}
+\item point1
+\vspace{-0.2cm}
+\item point2
+\end{itemize}
+
+}
 
 
 %----------------------------------------------------------------------------------------
 %	REFERENCES
 %----------------------------------------------------------------------------------------
 
-%\headerbox{References}{name=references,column=2,below=application}{
+% \headerbox{References}{name=references,column=2,below=application}{
 
-%\smaller % Reduce the font size in this block
-%\renewcommand{\section}[2]{\vskip 0.05em} % Get rid of the default "References" section title
-%\nocite{*} % Insert publications even if they are not cited in the poster
+% \smaller % Reduce the font size in this block
+% \renewcommand{\section}[2]{\vskip 0.05em} % Get rid of the default "References" section title
+% \nocite{*} % Insert publications even if they are not cited in the poster
 
-%\bibliographystyle{unsrt}
-%\bibliographystyle{IEEEtran}
-%\bibliography{biblio} % Use biblio.bib as the bibliography file
-%}
+% \bibliographystyle{unsrt}
+% \bibliographystyle{IEEEtran}
+% \bibliography{biblio} % Use biblio.bib as the bibliography file
+% }
 
 
 %----------------------------------------------------------------------------------------
 %	ACKNOWLEDGEMENTS
 %----------------------------------------------------------------------------------------
 
-% \headerbox{Acknowledgements}{name=acknowledgements, column=0, below=discussion, span=3}{
-% % finished
-% % \smaller
-% We would like to thank professor {\bf Deren Han} from the School of Mathematical Sciences, Beihang University and professor {\bf Wenjian Yu} from the Department of Computer Science and Technology, BNRist, Tsinghua University for generously providing GPU servers to help accomplish this work.
+\headerbox{Acknowledgements}{name=acknowledgements, column=0, below=discussion, span=3}{
+% finished
+% \smaller
+We would like to thank professor {\bf Deren Han} from the School of Mathematical Sciences, Beihang University and professor {\bf Wenjian Yu} from the Department of Computer Science and Technology, BNRist, Tsinghua University for generously providing GPU servers to help accomplish this work.
 
-% \hfill \small \textit{Code, configs, etc. available at \href{https://github.com/DeepPSP/cinc2021}{https://github.com/DeepPSP/cinc2021}.}
-% }
+}
 
 %----------------------------------------------------------------------------------------
 %	link to the GitHub repository
 %----------------------------------------------------------------------------------------
 
-% \headerbox{}{name=foottext, column=0, span=3, below=acknowledgements, textborder=none, headerborder=none,  boxheaderheight=0pt}{
-% % finished
-% \hfill \small \textit{Code, configs, etc. available at https://github.com/DeepPSP/cinc2022}.
-% }
+\headerbox{}{name=foottext, column=0, span=3, below=acknowledgements, textborder=none, headerborder=none,  boxheaderheight=0pt}{
+% finished
+\hfill \small \textit{Code, configs, etc. available at https://github.com/DeepPSP/cinc2023, and based on https://github.com/DeepPSP/torch\_ecg.}
+}
 
 
 \end{poster}
