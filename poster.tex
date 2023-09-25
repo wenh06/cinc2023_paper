@@ -98,6 +98,8 @@ $^2${\it College of Science, China Agricultural University} \\
 
 \newif\ifcoloredtext
 \coloredtexttrue
+\newif\ifboxednn
+\boxednntrue
 
 
 %----------------------------------------------------------------------------------------
@@ -143,33 +145,31 @@ We used a {\color{red}T}ime-{\color{red}i}ncremental {\color{red}C}onvolutional 
 %	Preprocessing
 %----------------------------------------------------------------------------------------
 
-% \headerbox{Preprocess Pipeline}{name=data, column=1, row=1, span=2, below=mtl}{
-% % finished
-% \begin{itemize}
-%     \item Butterworth bandpass filtering of order 4 and cutoff frequencies 0.5 - 30 Hz.
-%     \vspace{-0.2cm}
-%     \item Resampling to 100 Hz.
-%     \vspace{-0.2cm}
-%     \item Z-score normalization to zero mean and unit variance.
-% \end{itemize}
-% }
+\headerbox{Preprocess Pipeline}{name=data, column=1, row=1, span=1, below=backbone}{
+% finished
+\begin{itemize}
+    \item Butterworth bandpass filtering of order 4 and cutoff frequencies 0.5 - 30 Hz.
+    \vspace{-0.2cm}
+    \item Resampling to 100 Hz using polyphase filtering.
+    \vspace{-0.2cm}
+    \item Rescaling (Z-score normalization) to zero mean and unit variance.
+\end{itemize}
+}
 
 %----------------------------------------------------------------------------------------
 %	Training Setups
 %----------------------------------------------------------------------------------------
 
-% \headerbox{Training Setups}{name=training,span=2,column=1,row=1, below=data}{
-% % finished
-% \begin{itemize}
-%     \item Optimizer: AMSGrad variant of {\bf AdamW} with {\bf OneCycleLR} scheduler.
-%     \vspace{-0.2cm}
-%     \item Stratified train-validation split: 80\% -- 20\%.
-%     \vspace{-0.2cm}
-%     \item Batch size 32; epoch number $\leq 60$ with early stopping.
-%     \vspace{-0.2cm}
-%     \item Freeze backbone from specific epoch (typically 30).
-% \end{itemize}
-% }
+\headerbox{Training Strategies}{name=training, span=1, column=2, row=1, below=backbone}{
+% finished
+\begin{itemize}
+    \item Optimizer: AMSGrad variant of AdamW with OneCycleLR scheduler.
+    \vspace{-0.2cm}
+    \item Stratified train-validation split (split in patients): 80 \% -- 20 \%.
+    \vspace{-0.2cm}
+    \item Batch size 32; epoch number $\leq 55$ with early stopping patience 25 epochs.
+\end{itemize}
+}
 
 
 %----------------------------------------------------------------------------------------

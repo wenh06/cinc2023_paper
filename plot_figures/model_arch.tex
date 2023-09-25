@@ -38,6 +38,8 @@
 \path[->] ([yshift = -\pathshift]mlp.south) edge ([yshift = \pathshift]prob.north);
 
 \draw[rounded corners, dashed, thick] ([xshift = -80, yshift = -5]mlp.south) rectangle ([xshift = 80, yshift = 5]stem.north);
+\ifboxednn
 \draw[rounded corners, ultra thick] ([xshift = -103, yshift = -5]prob.south) rectangle ([xshift = 103, yshift = 5]input.north);
+\fi
 
 \end{tikzpicture}
