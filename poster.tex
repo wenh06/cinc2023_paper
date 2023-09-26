@@ -82,9 +82,6 @@ boxshade=plain
 %
 {\includegraphics[scale=0.101]{logo_tmu.jpeg}} % University/lab logo
 {
-% {\bf \fontsize{19pt}{19pt} \selectfont Searching for Effective Neural Network Architectures} \\
-% {\it \LARGE  for Heart Murmur Detection from Phonocardiogram}
-% } % Poster title
 {\bf \fontsize{19pt}{19pt} \selectfont Predicting Neurological Recovery from Coma with Longitudinal EEG Using Deep Neural Networks}
 } % Poster title
 {\vspace{0.3em} \smaller Jingsu KANG$^1$, Hao WEN$^2$  \\  % Author names
@@ -111,7 +108,7 @@ $^2${\it College of Science, China Agricultural University} \\
 % finished
 
 \begin{itemize}
-\item We modelled the problem as a \textbf{classification problem} where the learning objective is the discrete CPC scores (1 - 5). The final clinical outcome prediction is obtained via the mapping: CPC = 1 or 2 $\to$ ``Good outcome''; CPC = 3, 4, or 5 $\to$ ``Poor outcome''.
+\item We modeled the problem as a \textbf{classification problem} where the learning objective is the discrete CPC scores (1 - 5). The final clinical outcome prediction is obtained via the mapping: CPC = 1 or 2 $\to$ ``Good outcome''; CPC = 3, 4, or 5 $\to$ ``Poor outcome''.
 \vspace{-0.2cm}
 \item Offline signal quality index (SQI) was computed offline for EEG recordings. A part of EEGs was selected for training based on SQI.
 \vspace{-0.2cm}
@@ -132,14 +129,18 @@ $^2${\it College of Science, China Agricultural University} \\
 % \vspace{-0.3cm}
 
 We used a {\color{red}T}ime-{\color{red}i}ncremental {\color{red}C}onvolutional {\color{red}R}ecurrent {\color{red}N}eural {\color{red}N}etwork ({\color{red}TiCRNN}) model to predict probabilities of CPC scores for the EEG recordings.
-
 }
+
+%----------------------------------------------------------------------------------------
+%	NN Backbone
+%----------------------------------------------------------------------------------------
+
 \headerbox{Neural Network Backbone}{name=backbone, column=1, span=2, row=1, below=introduction}{
 % finished
 
 \input{plot_figures/se_bottleneck}%
 \begin{tikzpicture}
-\node [rectangle, text width = 20em, inner sep = 2pt, minimum height = 1.0em] {The neural network backbone is a convolutional network whose building blocks are {\color{red}SE-Bottleneck} blocks. The mainstream in the dashed box consists of 3 convolutional blocks (actually compositions of convolution, batch normalization and activation) followed by an SE block. The channels $n_1, n_2$ are typically several times of $m,$ hence giving the name ``bottleneck''. The shortcut is typically convolutions of kernel size 1, whose stride and input/output channels match the mainstream.};
+\node [rectangle, text width = 20em, inner sep = 2pt, minimum height = 1.0em] {The neural network backbone is a convolutional network whose building blocks are {\color{red}SE-Bottleneck} blocks. The mainstream in the dashed box consists of 3 convolutional blocks (actually compositions of convolution, batch normalization, and activation) followed by an SE block. The channels $n_1, n_2$ are typically several times of $m,$ hence giving the name ``bottleneck''. The shortcut is typically convolutions of kernel size 1, whose stride and input/output channels match the mainstream.};
 \end{tikzpicture}
 
 }
@@ -150,6 +151,7 @@ We used a {\color{red}T}ime-{\color{red}i}ncremental {\color{red}C}onvolutional 
 
 \headerbox{Preprocess Pipeline}{name=data, column=2, row=1, span=1, below=backbone}{
 % finished
+
 \begin{itemize}
 \item Select at most one 5-minute window from each recording by offline-computed SQI.
 \vspace{-0.2cm}
@@ -167,6 +169,7 @@ We used a {\color{red}T}ime-{\color{red}i}ncremental {\color{red}C}onvolutional 
 
 \headerbox{Training Strategies}{name=training, span=1, column=1, row=1, below=backbone}{
 % finished
+
 \begin{itemize}
 \item Optimizer: AMSGrad variant of AdamW with OneCycleLR scheduler.
 \vspace{-0.2cm}
@@ -196,7 +199,8 @@ Mean curves of challenge scores on the training set. Shaded areas are error boun
 %----------------------------------------------------------------------------------------
 
 \headerbox{Submission Results}{name=submission, span=2, column=0, below=nn}{
-% finished
+% almost finished
+% TODO: update the scores on the training and cross-val sets
 
 \renewcommand{\arraystretch}{1.25}
 \begin{center}
@@ -209,7 +213,7 @@ Mean curves of challenge scores on the training set. Shaded areas are error boun
 & \textbf{72 hours} & 12 hours & 24 hours & 48 hours \\ \hline
 Training & 0.814 $\pm$ 0.070 & - & - & - \\
 Cross-validation & 0.424 $\pm$ 0.026 & - & - & - \\ \hline
-Hidden validation & \textbf{0.701} & 0.33 & 0.40 & 0.75 \\
+Hidden validation & \textbf{0.701} & 0.33 & 0.40 & \textbf{0.75} \\
 Ranking & \textbf{5 / 270} & - & - & - \\
 \hlineB{3.5}
 \end{tabular}
@@ -217,9 +221,9 @@ Ranking & \textbf{5 / 270} & - & - & - \\
 \renewcommand{\arraystretch}{1}
 
 \begin{itemize}
-    \item Challenge score and ranking evaluated on the hidden validation set, scores on its truncated 12h / 24h / 48h subsets and scores on the training and cross-validation sets.
-    \vspace{-0.2cm}
-    \item Scores on the train and cross-validation sets are of the form $mean \pm std. dev.$ from all our offline experiments with z-score normalization included in the preprocessing pipeline.
+\item Challenge score and ranking evaluated on the hidden validation set, scores on its truncated 12h / 24h / 48h subsets, and scores on the training and cross-validation sets.
+\vspace{-0.2cm}
+\item Scores on the train and cross-validation sets are of the form $mean \pm std. dev.$ from all our offline experiments with z-score normalization included in the preprocessing pipeline.
 \end{itemize}
 
 }
@@ -229,11 +233,16 @@ Ranking & \textbf{5 / 270} & - & - & - \\
 %----------------------------------------------------------------------------------------
 
 \headerbox{Discussions and Limitations}{name=discussion, column=0, below=submission, span=3}{
-% not finished
+% almost finished
+
 \begin{itemize}
-\item point1
+\item Our team provided a solution that is relatively simple and lightweight, but still able to attain a TPR as high as 0.701 with FPR suppressed to a very low level ($\le 0.05$) for poor clinical outcome prediction.
 \vspace{-0.2cm}
-\item point2
+\item Our team made too much trade-off for the limited computation resources by dropping a large proportion of the EEG data by SQI thresholding and random slicing. The data amount (counting by time length) we really used for training the NN models merely constitutes 6 \% of the total EEG data. The potential of this extraordinarily big data had not yet been fully explored.
+\vspace{-0.2cm}
+\item Our team had planned to make full use of the data to train a larger model that learns latent representations from EEGs via unsupervised contrastive learning. However, due to the constraints of time and computation resources our team owns, we finally decided to stick to the simpler TiCRNN model. Architecture design and unsupervised training mechanisms for large EEG models are left as future research directions.
+\vspace{-0.2cm}
+\item The computation of SQI for EEGs is time-consuming. This prohibited us from adding a similar selection procedure in the pipeline of model evaluation on the hidden data and is highly probable to have a negative influence on our overall performance, especially for EEGs heavily contaminated with artifacts. Therefore, developing a faster and end-to-end SQI computation method would also be a meaningful research problem.
 \end{itemize}
 
 }
