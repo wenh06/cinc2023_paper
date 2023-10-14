@@ -11,6 +11,7 @@
 % \tikzexternalize[prefix=tikz/,optimize command away=\includepdf]
 \usepackage{boldline, multirow}
 \usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{colortbl}
 \usepackage{subcaption}
 \usepackage{relsize}
 \usepackage[ruled, vlined]{algorithm2e}
@@ -18,6 +19,9 @@
 % \tikzstyle{smallcircleblock} = [circle, draw, text width = 0.7em, text centered]
 
 % \tikzstyle{wideblock} = [rectangle, draw, text width = 6.5em, text centered, rounded corners, inner sep = 7pt, minimum height = 1.0em]
+
+
+\newcolumntype{g}{>{\columncolor[gray]{0.8}}l}
 
 
 \newif\ifcoloredtext

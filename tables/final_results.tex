@@ -9,23 +9,23 @@
 % \usepackage{boldline}
 % and probably one needs the following to make \textbf work
 % \usepackage[T1]{fontenc}
-\setlength\tabcolsep{1pt}
-\setlength\extrarowheight{2pt}
+\setlength\tabcolsep{6pt}
+\setlength\extrarowheight{1pt}
 \begin{tabular}{@{\extracolsep{4pt}}cclllllllll@{}}
 \hlineB{3.5}
  &  &  & \multicolumn{2}{c}{\textbf{72h after ROSC}} & \multicolumn{2}{c}{48h after ROSC} & \multicolumn{2}{c}{24h after ROSC} & \multicolumn{2}{c}{12h after ROSC} \\
- &  &  & Score & Rank & Score & Rank & Score & Rank & Score & Rank \\
+ &  &  & \textbf{Score} & \textbf{Rank} & Score & Rank & Score & Rank & Score & Rank \\
 \hlineB{2.5}
 \multicolumn{2}{c}{\multirow[c]{3}{*}{\textbf{Challenge Score}}} & \textbf{Test} & \textbf{0.554} & \textbf{12 / 35} & \textbf{0.54} & \textbf{13 / 35} & \textbf{0.257} & \textbf{28 / 35} & \textbf{0.252} & \textbf{15 / 35} \\
- &  & \textbf{Val.} & \textbf{0.701} & \textbf{3 / 35} & \textbf{0.746} & \textbf{1 / 35} & \textbf{0.403} & \textbf{16 / 35} & \textbf{0.328} & \textbf{12 / 35} \\
- &  & Train & 0.649 & 26 / 35 & 0.702 & 20 / 35 & 0.673 & 12 / 35 & 0.793 & 3 / 35 \\
+ &  & \textbf{Validation} & \textbf{0.701} & \textbf{3 / 35} & \textbf{0.746} & \textbf{1 / 35} & \textbf{0.403} & \textbf{16 / 35} & \textbf{0.328} & \textbf{12 / 35} \\
+ &  & Training & 0.649 & 26 / 35 & 0.702 & 20 / 35 & 0.673 & 12 / 35 & 0.793 & 3 / 35 \\
 \cline{1-11} \cline{2-11}
 \multirow[c]{3}{*}{CPC} & \multirow[c]{3}{*}{MAE} & \textbf{Test} & \textbf{1.014} & \textbf{3 / 35} & \textbf{0.957} & \textbf{2 / 35} & \textbf{1.111} & \textbf{1 / 35} & \textbf{1.347} & \textbf{7 / 35} \\
- &  & \textbf{Val.} & \textbf{1.104} & \textbf{7 / 35} & \textbf{1.173} & \textbf{7 / 35} & \textbf{1.211} & \textbf{4 / 35} & \textbf{1.421} & \textbf{11 / 35} \\
- &  & Train & 0.871 & 19 / 35 & 0.844 & 13 / 35 & 0.888 & 9 / 35 & 0.806 & 3 / 35 \\
+ &  & \textbf{Validation} & \textbf{1.104} & \textbf{7 / 35} & \textbf{1.173} & \textbf{7 / 35} & \textbf{1.211} & \textbf{4 / 35} & \textbf{1.421} & \textbf{11 / 35} \\
+ &  & Training & 0.871 & 19 / 35 & 0.844 & 13 / 35 & 0.888 & 9 / 35 & 0.806 & 3 / 35 \\
 \cline{1-11} \cline{2-11}
 \hlineB{3.5}
 \end{tabular}
-\caption{Challenge scores and rankings evaluated on the training and the hidden test/validation sets, and on their truncated 48h / 24h / 12h subsets. MAE (mean absolute error) of CPC score predictions is also provided.}
+\caption{Challenge scores and rankings evaluated on the Training and the hidden Test/Validation sets, and on their truncated 48h / 24h / 12h subsets. MAE (mean absolute error) of CPC score predictions is also provided.}
 \label{tab:final_results}
 \end{table*}

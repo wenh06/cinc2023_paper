@@ -34,7 +34,7 @@
 \node [wideblock, below = \blockdist of pool] (mlp) {Multi-Layer Perceptron};
 \path[->] ([yshift = -\pathshift]pool.south) edge ([yshift = \pathshift]mlp.north);
 
-\node [rectangle, text width = 12em, text centered, rounded corners, inner sep = 3pt, minimum height = 1.0em, below = \blockdist of mlp] (prob) {Probability Vectors for 5 CPC Scores};
+\node [rectangle, text width = 20em, text centered, rounded corners, inner sep = 3pt, minimum height = 1.0em, below = \blockdist of mlp] (prob) {Probability Vectors for 5 CPC Scores};
 \path[->] ([yshift = -\pathshift]mlp.south) edge ([yshift = \pathshift]prob.north);
 
 \draw[rounded corners, dashed, thick] ([xshift = -80, yshift = -5]mlp.south) rectangle ([xshift = 80, yshift = 5]stem.north);
