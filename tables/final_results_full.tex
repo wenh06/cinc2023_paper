@@ -1,0 +1,43 @@
+% requires packages boldline, multirow
+% put the following in the preamble
+% \usepackage{multirow}
+% \usepackage{boldline}
+% and probably one needs the following to make \textbf work
+% \usepackage[T1]{fontenc}
+\setlength\tabcolsep{1pt}
+\setlength\extrarowheight{2pt}
+\begin{tabular}{@{\extracolsep{4pt}}cclllllllll@{}}
+\hlineB{3.5}
+ &  &  & \multicolumn{2}{c}{\textbf{72h after ROSC}} & \multicolumn{2}{c}{48h after ROSC} & \multicolumn{2}{c}{24h after ROSC} & \multicolumn{2}{c}{12h after ROSC} \\
+ &  &  & Score & Rank & Score & Rank & Score & Rank & Score & Rank \\
+\hlineB{2.5}
+\multicolumn{2}{c}{\multirow[c]{3}{*}{\textbf{Challenge Score}}} & \textbf{Test} & \textbf{0.554} & \textbf{13 / 36} & \textbf{0.54} & \textbf{14 / 36} & \textbf{0.257} & \textbf{29 / 36} & \textbf{0.252} & \textbf{16 / 36} \\
+ &  & \textbf{Val.} & \textbf{0.701} & \textbf{3 / 36} & \textbf{0.746} & \textbf{1 / 36} & \textbf{0.403} & \textbf{17 / 36} & \textbf{0.328} & \textbf{13 / 36} \\
+ &  & Train & 0.649 & 27 / 36 & 0.702 & 21 / 36 & 0.673 & 12 / 36 & 0.793 & 3 / 36 \\
+\cline{1-11} \cline{2-11}
+\multirow[c]{6}{*}{CPC} & \multirow[c]{3}{*}{MAE} & Test & 1.014 & 4 / 36 & 0.957 & 2 / 36 & 1.111 & 1 / 36 & 1.347 & 8 / 36 \\
+ &  & Val. & 1.104 & 7 / 36 & 1.173 & 7 / 36 & 1.211 & 5 / 36 & 1.421 & 12 / 36 \\
+ &  & Train & 0.871 & 20 / 36 & 0.844 & 13 / 36 & 0.888 & 9 / 36 & 0.806 & 3 / 36 \\
+\cline{2-11}
+ & \multirow[c]{3}{*}{MSE} & Test & 2.824 & 18 / 36 & 2.629 & 11 / 36 & 3.077 & 16 / 36 & 3.483 & 20 / 36 \\
+ &  & Val. & 2.965 & 18 / 36 & 3.34 & 21 / 36 & 3.513 & 22 / 36 & 3.837 & 23 / 36 \\
+ &  & Train & 2.133 & 23 / 36 & 2.032 & 21 / 36 & 2.356 & 17 / 36 & 1.846 & 3 / 36 \\
+\cline{1-11} \cline{2-11}
+\multirow[c]{12}{*}{Outcome} & \multirow[c]{3}{*}{AUROC} & Test & 0.86 & 9 / 36 & 0.854 & 10 / 36 & 0.755 & 16 / 36 & 0.689 & 17 / 36 \\
+ &  & Val. & 0.85 & 11 / 36 & 0.826 & 10 / 36 & 0.795 & 10 / 36 & 0.731 & 14 / 36 \\
+ &  & Train & 0.905 & 26 / 36 & 0.91 & 20 / 36 & 0.906 & 10 / 36 & 0.946 & 3 / 36 \\
+\cline{2-11}
+ & \multirow[c]{3}{*}{AUPRC} & Test & 0.904 & 12 / 36 & 0.884 & 15 / 36 & 0.808 & 23 / 36 & 0.787 & 18 / 36 \\
+ &  & Val. & 0.919 & 8 / 36 & 0.907 & 6 / 36 & 0.869 & 9 / 36 & 0.837 & 7 / 36 \\
+ &  & Train & 0.928 & 26 / 36 & 0.937 & 21 / 36 & 0.942 & 11 / 36 & 0.968 & 3 / 36 \\
+\cline{2-11}
+ & \multirow[c]{3}{*}{F-measure} & Test & 0.67 & 24 / 36 & 0.694 & 13 / 36 & 0.667 & 10 / 36 & 0.63 & 10 / 36 \\
+ &  & Val. & 0.674 & 19 / 36 & 0.663 & 19 / 36 & 0.621 & 20 / 36 & 0.639 & 11 / 36 \\
+ &  & Train & 0.761 & 25 / 36 & 0.777 & 21 / 36 & 0.764 & 13 / 36 & 0.833 & 3 / 36 \\
+\cline{2-11}
+ & \multirow[c]{3}{*}{Accuracy} & Test & 0.758 & 13 / 36 & 0.771 & 7 / 36 & 0.748 & 5 / 36 & 0.693 & 13 / 36 \\
+ &  & Val. & 0.729 & 16 / 36 & 0.71 & 16 / 36 & 0.682 & 15 / 36 & 0.682 & 10 / 36 \\
+ &  & Train & 0.801 & 23 / 36 & 0.809 & 20 / 36 & 0.801 & 14 / 36 & 0.853 & 3 / 36 \\
+\cline{1-11} \cline{2-11}
+\hlineB{3.5}
+\end{tabular}
