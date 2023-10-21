@@ -13,7 +13,7 @@ The public dataset for the Challenge is the International Cardiac Arrest REsearc
     \item Previous literature \cite{Zheng_2021_coma} has illustrated the feasibility of using EEG as the sole physiological signal source on the problem this work considers.
 \end{itemize}
 
-As the computation resources and execution time are limited under the circumstances of the Challenge, further offline data selection was conducted according to the signal quality index (SQI) of the EEGs. The SQI was computed for every 5-minute epoch as its proportion of ``normal'' 10s segments. A 10s segment is regarded as ``normal'' if no artefact is detected from it, including abnormal values and patterns in the waveform and in the spectrum \footnote{Refer to \url{https://github.com/DeepPSP/cinc2023/utils/artifact_pipeline} for more details.}
+As the computation resources and execution time are limited under the circumstances of the Challenge, further offline data selection was conducted according to the signal quality index (SQI) of the EEGs. The SQI was computed for every 5-minute epoch as its proportion of ``normal'' 10s segments. A 10s segment is regarded as ``normal'' if no artefact is detected from it, including abnormal values and patterns in the waveform and in the spectrum \footnote{Refer to \url{https://github.com/DeepPSP/cinc2023/blob/master/utils/artifact_pipeline} for more details.}
 % The distribution of SQI for all 5-minute epochs is collected in Figure \ref{fig:sqi-stats}.
 At most one epoch was chosen (requiring SQI $\ge 0.95$) from each EEG recording as a representative of it for developing our neural network (NN) models (models will be discussed in Section \ref{subsec:models}). The total number of 5-minute epochs selected was 23350.
 
