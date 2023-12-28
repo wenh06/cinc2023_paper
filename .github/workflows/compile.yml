@@ -207,6 +207,39 @@ jobs:
           yfonts-t1
           zxjafbfont
           zxjafont
+          numericplots
+          eso-pic
+          siunitx
+          pdflscape
+          enumitem
+          courier
+          newpx
+          diagbox
+          stringenc
+          bigfoot
+          xkeyval
+          mnsymbol
+          hypdoc
+          kastrup
+          pict2e
+          ulem
+          metalogo
+          dashbox
+          cases
+          trimspaces
+          carlisle
+          makeplot
+          ntheorem
+          l3packages
+          pstricks-add
+          zhnumber
+          oberdiek
+          translations
+          multido
+          imakeidx
+          pdfpages
+          xpatch
+          footmisc
     - name: Install latexmk and extra software
       run: |
         sudo apt install latexmk -y
